@@ -36,7 +36,6 @@ jobs:
         git commit -m "${{ env.TAG_NAME }}"
         git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
         git push -f origin release
-
     - name: Upload to Releases
       uses: softprops/action-gh-release@v2
       env:
