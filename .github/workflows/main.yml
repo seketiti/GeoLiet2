@@ -22,11 +22,11 @@ jobs:
         #unzip GeoLite2-ASN-CSV.zip
         #unzip GeoLite2-City-CSV.zip
         #unzip GeoLite2-Country-CSV.zip
-        #mkdir -p upload
+        mkdir -p upload
         #cp -v GeoLite*/*.mmdb upload
         #cp -v GeoLite*/*.csv upload
         echo "TAG_NAME=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
-        echo "TAG_NAME=$(date +"%Y.%m.%d")" >> c.txt
+        echo "TAG_NAME=$(date +"%Y.%m.%d")" >> upload/c.txt
 
     - name: Push to Release
       run: |
