@@ -1,0 +1,41 @@
+name: Push GeoLite2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 16 * * *
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download GeoLite.mmdb
+      run: |
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-ASN-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv
+        mkdir -p upload
+        cp -v GeoLite*/*.mmdb upload
+        cp -v GeoLite*/*.csv upload
+        echo "TAG_NAME=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+    - name: Push to Release
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "${{ github.actor }}@users.noreply.github.com"
+        git checkout -b release
+        git add upload
+        git commit -m "${{ env.TAG_NAME }}"
+        git push -f origin release
+
+    - name: Upload to Releases
+      uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        body: ${{ env.TAG_NAME }}
+        files: upload/
