@@ -27,11 +27,14 @@ jobs:
 
     - name: Push to Release
       run: |
+        cd upload
+        git init
         git config user.name "${{ github.actor }}"
         git config user.email "${{ github.actor }}@users.noreply.github.com"
         git checkout -b release
-        git add upload
+        git add .
         git commit -m "${{ env.TAG_NAME }}"
+        git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
         git push -f origin release
 
     - name: Upload to Releases
