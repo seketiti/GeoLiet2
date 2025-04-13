@@ -8,6 +8,8 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write     # 允许读写仓库内容
     steps:
     - name: Download GeoLite.mmdb
       run: |
