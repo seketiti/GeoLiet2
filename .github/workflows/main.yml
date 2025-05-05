@@ -38,7 +38,7 @@ jobs:
         git push -f -u origin release
 
     - name: Download GeoLite.CSV
-      run:
+      run: |
         wget -nv -O GeoLite2-City-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=zip"
         unzip GeoLite2-City-CSV.zip
         cp -v GeoLite*/*.csv upload
